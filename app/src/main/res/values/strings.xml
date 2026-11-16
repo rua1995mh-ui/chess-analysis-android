@@ -86,6 +86,22 @@
     <string name="import_pgn_failed_fmt">Move %1$d \"%2$s\" couldn\'t be read — import stopped.</string>
     <string name="import_pgn_ok_fmt">Imported %1$d moves.</string>
     <string name="import_pgn_error">Couldn\'t import that PGN.</string>
+    
+    <!-- Online game import -->
+    <string name="import_chesscom">Import from Chess.com</string>
+    <string name="import_lichess">Import from Lichess</string>
+    <string name="import_username_title">Import games</string>
+    <string name="import_username_hint">Enter username</string>
+    <string name="import_fetch_games">Fetch games</string>
+    <string name="import_fetching">Fetching games…</string>
+    <string name="import_games_empty">No games found for this username.</string>
+    <string name="import_network_error">Could not connect. Check your internet connection.</string>
+    <string name="import_invalid_username">Please enter a valid username.</string>
+    <string name="import_games_saved">Games imported successfully.</string>
+    <string name="imported_games_title">Imported games</string>
+    <string name="import_game_open">Open game</string>
+    <string name="import_game_delete">Delete game</string>
+    
     <string name="import_fen_ok">Position imported.</string>
     <string name="import_read_error">Couldn\'t read that file.</string>
     <string name="share_target_label">Analyze game</string>
