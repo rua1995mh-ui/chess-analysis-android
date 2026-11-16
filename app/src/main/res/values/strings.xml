@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chess Analysis</string>
+    <string name="app_name">Faris Chess</string>
 
     <!-- Main screen -->
     <string name="initializing">Initializing…</string>
