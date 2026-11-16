@@ -87,6 +87,22 @@
     <string name="import_pgn_failed_fmt">تعذرت قراءة النقلة %1$d "%2$s" — تم إيقاف الاستيراد.</string>
     <string name="import_pgn_ok_fmt">تم استيراد %1$d نقلة.</string>
     <string name="import_pgn_error">تعذر استيراد ملف PGN.</string>
+    
+    <!-- Online game import -->
+    <string name="import_chesscom">استيراد من Chess.com</string>
+    <string name="import_lichess">استيراد من Lichess</string>
+    <string name="import_username_title">استيراد المباريات</string>
+    <string name="import_username_hint">أدخل اسم المستخدم</string>
+    <string name="import_fetch_games">جلب المباريات</string>
+    <string name="import_fetching">جارٍ جلب المباريات…</string>
+    <string name="import_games_empty">لم يتم العثور على مباريات لهذا المستخدم.</string>
+    <string name="import_network_error">تعذّر الاتصال. تحقق من اتصال الإنترنت.</string>
+    <string name="import_invalid_username">يُرجى إدخال اسم مستخدم صحيح.</string>
+    <string name="import_games_saved">تم استيراد المباريات بنجاح.</string>
+    <string name="imported_games_title">المباريات المستوردة</string>
+    <string name="import_game_open">فتح المباراة</string>
+    <string name="import_game_delete">حذف المباراة</string>
+    
     <string name="import_fen_ok">تم استيراد الوضعية.</string>
     <string name="import_read_error">تعذرت قراءة الملف.</string>
     <string name="share_target_label">تحليل المباراة</string>
