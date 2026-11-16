@@ -114,7 +114,8 @@ class GamePlayController(
         if (clockActive) {
             if (chessBoard.sideToMove == 'w') blackTimeMs += settingsRepo.clockIncrement * 1000L
             else whiteTimeMs += settingsRepo.clockIncrement * 1000L
-            clockHandler.postDelayed(clockTick, 1000)
+            clockHandler.removeCallbacks(clockTick)
+clockHandler.postDelayed(clockTick, 1000)
             clockRunning = true
         }
         updateGameStatus()
@@ -199,8 +200,9 @@ class GamePlayController(
         chessBoard.halfMoveClock = 0
         activity.findViewById<View>(R.id.clockRow)?.visibility = View.VISIBLE
         updateClockDisplay()
-        clockHandler.post(clockTick)
-        clockRunning = true
+        clockHandler.removeCallbacks(clockTick)
+clockHandler.postDelayed(clockTick, 1000)
+clockRunning = true
     }
 
     private fun updateClockDisplay() {
