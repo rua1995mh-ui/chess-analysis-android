@@ -73,7 +73,7 @@ class ImportExportController(
         val input = EditText(activity).apply {
             hint = activity.getString(R.string.import_username_hint)
             inputType = InputType.TYPE_CLASS_TEXT
-            singleLine = true
+            isSingleLine = true
         }
 
         val pad = (16 * activity.resources.displayMetrics.density).toInt()
@@ -626,16 +626,18 @@ class ImportExportController(
             return
         }
 
-        val uri = androidx.core.content.FilePro
-        .getUriForFile(
-    activity,
+    val uri =
+        androidx.core.content.FileProvider.getUriForFile
+        (
+         activity,
     "${activity.packageName}.fileprovider",
     file
+
 )
 
 val intent = Intent(Intent.ACTION_SEND).apply {
     type = "application/json"
-    putExtra(Intent.EXTRA_STREAM, uri)
+    putExtra(Intent.EXTRA_STREAM, uri as android.os.Parcelable)
     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 }
 
