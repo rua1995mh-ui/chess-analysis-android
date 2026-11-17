@@ -1,3 +1,4 @@
+
 package com.example.chessanalysis.controller
 
 import android.content.Intent
@@ -18,10 +19,12 @@ import com.example.chessanalysis.data.SettingsRepository
 import com.example.chessanalysis.data.PgnExporter
 import com.example.chessanalysis.data.PgnImporter
 import com.example.chessanalysis.data.GameHistoryManager
+import com.example.chessanalysis.data.ImportedGamesRepository
+import com.example.chessanalysis.data.OnlineGameImporter
+import com.example.chessanalysis.data.ImportedGame
 import com.example.chessanalysis.engine.GameReviewer
 import com.example.chessanalysis.engine.LiveAnalyzer
 import com.example.chessanalysis.engine.PgnGameBuilder
-import com.example.chessanalysis.model.*
 import com.example.chessanalysis.ui.*
 import com.example.chessanalysis.ml.ScreenshotImporter
 import com.google.android.material.snackbar.Snackbar
@@ -46,10 +49,164 @@ class ImportExportController(
     internal var lastImportPerspective: ScreenshotImporter.Perspective? = null
 
     fun showImportChooser() {
-        val items = arrayOf(activity.getString(R.string.import_pgn_manual), activity.getString(R.string.import_upload_data))
+        val items = arrayOf(
+            activity.getString(R.string.import_pgn_manual),
+            activity.getString(R.string.import_upload_data),
+            activity.getString(R.string.import_chesscom),
+            activity.getString(R.string.import_lichess)
+        )
+
         AlertDialog.Builder(activity)
             .setTitle(R.string.import_how_title)
-            .setItems(items) { _, which -> if (which == 0) showPgnPasteDialog() else launchImportFilePicker() }
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> showPgnPasteDialog()
+                    1 -> launchImportFilePicker()
+                    2 -> showOnlineImportDialog(OnlineGameImporter.CHESS_COM)
+                    3 -> showOnlineImportDialog(OnlineGameImporter.LICHESS)
+                }
+            }
+            .show()
+    }
+
+    private fun showOnlineImportDialog(platform: String) {
+        val input = EditText(activity).apply {
+            hint = activity.getString(R.string.import_username_hint)
+            inputType = InputType.TYPE_CLASS_TEXT
+            singleLine = true
+        }
+
+        val pad = (16 * activity.resources.displayMetrics.density).toInt()
+
+        val container = FrameLayout(activity).apply {
+            setPadding(pad, pad / 2, pad, 0)
+            addView(
+                input,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                )
+            )
+        }
+
+        AlertDialog.Builder(activity)
+            .setTitle(R.string.import_username_title)
+            .setView(container)
+            .setPositiveButton(R.string.import_fetch_games) { _, _ ->
+                val username = input.text.toString().trim()
+
+                if (username.isBlank()) {
+                    Snackbar.make(
+                        chessBoard,
+                        R.string.import_invalid_username,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
+                    fetchAndSaveOnlineGames(platform, username)
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun fetchAndSaveOnlineGames(
+        platform: String,
+        username: String
+    ) {
+        Snackbar.make(
+            chessBoard,
+            R.string.import_fetching,
+            Snackbar.LENGTH_INDEFINITE
+        ).show()
+
+        activity.lifecycleScope.launch {
+            try {
+                val fetchedGames = OnlineGameImporter.fetchGames(
+                    platform,
+                    username
+                )
+
+                val addedGames = withContext(Dispatchers.IO) {
+                    ImportedGamesRepository.addAll(
+                        activity,
+                        fetchedGames
+                    )
+                }
+
+                val savedGames = withContext(Dispatchers.IO) {
+                    ImportedGamesRepository.loadAll(activity).filter {
+                        it.platform == platform &&
+                        it.username.equals(username, ignoreCase = true)
+                    }
+                }
+
+                if (addedGames.isNotEmpty()) {
+                    Snackbar.make(
+                        chessBoard,
+                        activity.getString(R.string.import_games_saved) +
+                            " (${addedGames.size})",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+                showImportedGames(savedGames)
+
+            } catch (e: Exception) {
+                Log.e(
+                    "OnlineGameImport",
+                    "Could not fetch online games",
+                    e
+                )
+
+                Snackbar.make(
+                    chessBoard,
+                    activity.getString(R.string.import_network_error) +
+                        "\n" + (e.message ?: ""),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    private fun showImportedGames(games: List<ImportedGame>) {
+        if (games.isEmpty()) {
+            Snackbar.make(
+                chessBoard,
+                R.string.import_games_empty,
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        val labels = games.map { game ->
+            val white = game.white.ifBlank { "White" }
+            val black = game.black.ifBlank { "Black" }
+
+            buildString {
+                append(white)
+                append(" - ")
+                append(black)
+
+                if (game.date.isNotBlank()) {
+                    append(" | ")
+                    append(game.date)
+                }
+
+                if (game.result.isNotBlank()) {
+                    append(" | ")
+                    append(game.result)
+                }
+            }
+        }
+
+        AlertDialog.Builder(activity)
+            .setTitle(R.string.imported_games_title)
+            .setItems(labels.toTypedArray()) { _, which ->
+                if (which in games.indices) {
+                    importPgnText(games[which].pgn)
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
@@ -57,14 +214,24 @@ class ImportExportController(
         val input = EditText(activity).apply {
             hint = activity.getString(R.string.import_pgn_hint)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            minLines = 5; maxLines = 12; gravity = Gravity.TOP or Gravity.START
+            minLines = 5
+            maxLines = 12
+            gravity = Gravity.TOP or Gravity.START
         }
+
         val pad = (16 * activity.resources.displayMetrics.density).toInt()
-        val container = FrameLayout(activity).apply { setPadding(pad, pad / 2, pad, 0); addView(input) }
+
+        val container = FrameLayout(activity).apply {
+            setPadding(pad, pad / 2, pad, 0)
+            addView(input)
+        }
+
         AlertDialog.Builder(activity)
             .setTitle(R.string.import_pgn_manual)
             .setView(container)
-            .setPositiveButton(R.string.import_load) { _, _ -> importPgnText(input.text.toString()) }
+            .setPositiveButton(R.string.import_load) { _, _ ->
+                importPgnText(input.text.toString())
+            }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
@@ -72,16 +239,18 @@ class ImportExportController(
     fun launchImportFilePicker() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "*/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/*", "image/*"))
+            putExtra(
+                Intent.EXTRA_MIME_TYPES,
+                arrayOf("application/json", "text/*", "image/*")
+            )
             addCategory(Intent.CATEGORY_OPENABLE)
         }
+
         activity.startActivityForResult(intent, REQ_IMPORT_DATA)
     }
 
     /**
-     * PGN/FEN handed over by another app — "Share PGN" (ACTION_SEND) or opening a .pgn file
-     * (ACTION_VIEW). Loads the game straight into review mode, so only the analyze button is left
-     * to press. Returns false if the intent carries nothing importable (normal app start).
+     * PGN/FEN handed over by another app.
      */
     @Suppress("DEPRECATION")
     fun handleIncomingIntent(intent: Intent?): Boolean {
@@ -90,77 +259,156 @@ class ImportExportController(
             Intent.ACTION_VIEW -> intent.data
             else -> return false
         }
-        if (uri != null) { handleImportUri(uri); return true }
-        val text = intent.getStringExtra(Intent.EXTRA_TEXT)?.takeIf { it.isNotBlank() } ?: return false
-        if (looksLikeFen(text.trimStart())) importFenText(text) else importPgnText(text)
+
+        if (uri != null) {
+            handleImportUri(uri)
+            return true
+        }
+
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            ?.takeIf { it.isNotBlank() }
+            ?: return false
+
+        if (looksLikeFen(text.trimStart())) {
+            importFenText(text)
+        } else {
+            importPgnText(text)
+        }
+
         return true
     }
 
     fun handleImportUri(uri: Uri) {
         val mime = activity.contentResolver.getType(uri) ?: ""
-        if (mime.startsWith("image/")) { importScreenshot(uri); return }
-        val content = try {
-            activity.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: ""
-        } catch (e: Exception) {
-            Snackbar.make(chessBoard, R.string.import_read_error, Snackbar.LENGTH_LONG).show(); return
+
+        if (mime.startsWith("image/")) {
+            importScreenshot(uri)
+            return
         }
+
+        val content = try {
+            activity.contentResolver.openInputStream(uri)
+                ?.bufferedReader()
+                ?.use { it.readText() } ?: ""
+        } catch (e: Exception) {
+            Snackbar.make(
+                chessBoard,
+                R.string.import_read_error,
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
+
         val trimmed = content.trimStart()
-        val isHistoryJson = trimmed.startsWith("[") && trimmed.drop(1).trimStart().startsWith("{")
+        val isHistoryJson = trimmed.startsWith("[") &&
+            trimmed.drop(1).trimStart().startsWith("{")
+
         when {
-            trimmed.isEmpty() -> Snackbar.make(chessBoard, R.string.import_read_error, Snackbar.LENGTH_LONG).show()
-            isHistoryJson -> {
-                GameHistoryManager.importGames(activity, uri); activity.historyController.refreshGameHistoryList()
-                android.widget.Toast.makeText(activity, R.string.import_done, android.widget.Toast.LENGTH_SHORT).show()
+            trimmed.isEmpty() -> {
+                Snackbar.make(
+                    chessBoard,
+                    R.string.import_read_error,
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
+
+            isHistoryJson -> {
+                GameHistoryManager.importGames(activity, uri)
+                activity.historyController.refreshGameHistoryList()
+
+                android.widget.Toast.makeText(
+                    activity,
+                    R.string.import_done,
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+
             looksLikeFen(trimmed) -> importFenText(trimmed)
             else -> importPgnText(content)
         }
     }
 
     fun looksLikeFen(text: String): Boolean {
-        val line = text.lineSequence().firstOrNull { it.isNotBlank() }?.trim() ?: return false
-        return line.matches(Regex("""([pnbrqkPNBRQK1-8]+/){7}[pnbrqkPNBRQK1-8]+(\s+[wb].*)?"""))
+        val line = text.lineSequence()
+            .firstOrNull { it.isNotBlank() }
+            ?.trim() ?: return false
+
+        return line.matches(
+            Regex("""([pnbrqkPNBRQK1-8]+/){7}[pnbrqkPNBRQK1-8]+(\s+[wb].*)?""")
+        )
     }
 
     fun importFenText(fenRaw: String) {
-        val fen = fenRaw.lineSequence().firstOrNull { it.isNotBlank() }?.trim() ?: return
+        val fen = fenRaw.lineSequence()
+            .firstOrNull { it.isNotBlank() }
+            ?.trim() ?: return
+
         chessBoard.setupMode = false
         activity.btnSetup.text = activity.getString(R.string.setup_board)
         activity.gameModel.vsEngine = false
         activity.gameModel.liveSessionActive = false
         activity.analysisController.exitAnalysisView()
+
         chessBoard.setFen(fen)
         activity.gameModel.currentFen = chessBoard.getFen()
         activity.gameModel.resetHistory(activity.gameModel.currentFen)
         chessBoard.setFen(activity.gameModel.currentFen)
+
         activity.analysisController.requestAnalysis()
         activity.gamePlayController.updateGameStatus()
-        Snackbar.make(chessBoard, R.string.import_fen_ok, Snackbar.LENGTH_SHORT).show()
+
+        Snackbar.make(
+            chessBoard,
+            R.string.import_fen_ok,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     fun importScreenshot(uri: Uri) {
-        Snackbar.make(chessBoard, R.string.import_screenshot_working, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            chessBoard,
+            R.string.import_screenshot_working,
+            Snackbar.LENGTH_SHORT
+        ).show()
+
         activity.lifecycleScope.launch(Dispatchers.IO) {
             val bmp = decodeDownsampled(uri)
             val board = bmp?.let { ScreenshotImporter.cropBoard(it) }
             val result = bmp?.let { ScreenshotImporter.recognize(it) }
             bmp?.recycle()
+
             withContext(Dispatchers.Main) {
                 if (result == null) {
                     activity.setupModeController.hideFlipButton()
-                    Snackbar.make(chessBoard, R.string.import_screenshot_none, Snackbar.LENGTH_LONG).show()
+
+                    Snackbar.make(
+                        chessBoard,
+                        R.string.import_screenshot_none,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+
                     board?.recycle()
                 } else {
                     lastImportStyle = result.style
                     lastImportBoard = board
                     lastImportPerspective = result.perspective
+
                     chessBoard.flipBoard = false
                     enterSetupWithFen(result.fen)
                     activity.setupModeController.showFlipButton()
+
                     if (result.uncertain) {
-                        Snackbar.make(chessBoard, R.string.screenshot_uncertain, Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(
+                            chessBoard,
+                            R.string.screenshot_uncertain,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     } else {
-                        Snackbar.make(chessBoard, R.string.import_screenshot_ok, Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(
+                            chessBoard,
+                            R.string.import_screenshot_ok,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -168,83 +416,176 @@ class ImportExportController(
     }
 
     fun decodeDownsampled(uri: Uri): Bitmap? = try {
-        val bounds = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        activity.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it, null, bounds) }
+        val bounds = android.graphics.BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+
+        activity.contentResolver.openInputStream(uri)?.use {
+            android.graphics.BitmapFactory.decodeStream(it, null, bounds)
+        }
+
         var sample = 1
-        while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 1280) sample *= 2
-        val opts = android.graphics.BitmapFactory.Options().apply { inSampleSize = sample }
-        activity.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it, null, opts) }
-    } catch (e: Exception) { null }
+
+        while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 1280) {
+            sample *= 2
+        }
+
+        val opts = android.graphics.BitmapFactory.Options().apply {
+            inSampleSize = sample
+        }
+
+        activity.contentResolver.openInputStream(uri)?.use {
+            android.graphics.BitmapFactory.decodeStream(it, null, opts)
+        }
+    } catch (e: Exception) {
+        null
+    }
 
     fun enterSetupWithFen(fen: String) {
         activity.gameModel.vsEngine = false
         activity.analysisController.exitAnalysisView()
+
         chessBoard.setFen(fen)
         activity.gameModel.currentFen = chessBoard.getFen()
         activity.gameModel.resetHistory(activity.gameModel.currentFen)
         chessBoard.setFen(activity.gameModel.currentFen)
+
         chessBoard.setupMode = true
         activity.btnSetup.text = activity.getString(R.string.play_from_here)
         chessBoard.onBoardChanged?.invoke(chessBoard.board)
         chessBoard.requestLayout()
+
         analyzer.idle()
         lastSetupBoard = snapshotBoard()
     }
 
     fun snapshotBoard(): Array<Array<ChessBoardView.Piece?>> =
-        chessBoard.board.map { row -> row.map { it?.copy() }.toTypedArray() }.toTypedArray()
+        chessBoard.board.map { row ->
+            row.map { it?.copy() }.toTypedArray()
+        }.toTypedArray()
 
     fun importPgnText(text: String) {
         try {
             val game = PgnImporter.parse(text)
-            if (game == null) { Snackbar.make(chessBoard, R.string.import_pgn_none, Snackbar.LENGTH_LONG).show(); return }
-            val fens = ArrayList<String>().apply { add(game.startFen) }
-            val froms = ArrayList<Pair<Int, Int>?>().apply { add(null) }
+
+            if (game == null) {
+                Snackbar.make(
+                    chessBoard,
+                    R.string.import_pgn_none,
+                    Snackbar.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            val fens = ArrayList<String>().apply {
+                add(game.startFen)
+            }
+
+            val froms = ArrayList<Pair<Int, Int>?>().apply {
+                add(null)
+            }
+
             chessBoard.setFen(game.startFen)
+
             for ((i, san) in game.sanMoves.withIndex()) {
                 val mv = activity.theoryController.resolveSan(san)
+
                 if (mv == null) {
                     chessBoard.setFen(activity.gameModel.currentFen)
-                    Snackbar.make(chessBoard, activity.getString(R.string.import_pgn_failed_fmt, i + 1, san), Snackbar.LENGTH_LONG).show()
+
+                    Snackbar.make(
+                        chessBoard,
+                        activity.getString(
+                            R.string.import_pgn_failed_fmt,
+                            i + 1,
+                            san
+                        ),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+
                     return
                 }
-                chessBoard.makeMove(mv.fr, mv.fc, mv.tr, mv.tc, mv.promo)
+
+                chessBoard.makeMove(
+                    mv.fr,
+                    mv.fc,
+                    mv.tr,
+                    mv.tc,
+                    mv.promo
+                )
+
                 fens.add(chessBoard.getFen())
                 froms.add(mv.fr to mv.fc)
             }
+
             chessBoard.setupMode = false
             activity.btnSetup.text = activity.getString(R.string.setup_board)
             activity.gameModel.vsEngine = false
             activity.analysisController.exitAnalysisView()
-            activity.gameModel.positionHistory.clear(); activity.gameModel.positionHistory.addAll(fens)
-            activity.gameModel.moveFromHistory.clear(); activity.gameModel.moveFromHistory.addAll(froms)
-            activity.gameModel.currentFen = activity.gameModel.positionHistory.last()
+
+            activity.gameModel.positionHistory.clear()
+            activity.gameModel.positionHistory.addAll(fens)
+
+            activity.gameModel.moveFromHistory.clear()
+            activity.gameModel.moveFromHistory.addAll(froms)
+
+            activity.gameModel.currentFen =
+                activity.gameModel.positionHistory.last()
+
             activity.gameModel.gameOverShown = false
             activity.gameModel.liveSessionActive = false
             activity.gameModel.currentPgnGame = game
+
             activity.analysisController.enterReviewMode()
-            Snackbar.make(chessBoard, activity.getString(R.string.import_pgn_ok_fmt, game.sanMoves.size), Snackbar.LENGTH_LONG).show()
+
+            Snackbar.make(
+                chessBoard,
+                activity.getString(
+                    R.string.import_pgn_ok_fmt,
+                    game.sanMoves.size
+                ),
+                Snackbar.LENGTH_LONG
+            ).show()
+
         } catch (e: Exception) {
             Log.e("PgnImport", "import failed", e)
+
             activity.gameModel.resetHistory(activity.gameModel.currentFen)
             chessBoard.setFen(activity.gameModel.currentFen)
-            Snackbar.make(chessBoard, R.string.import_pgn_error, Snackbar.LENGTH_LONG).show()
+
+            Snackbar.make(
+                chessBoard,
+                R.string.import_pgn_error,
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 
     fun buildExportGame(): PgnImporter.Game {
         val fens = activity.gameModel.positionHistory.toList()
-        return PgnGameBuilder.build(fens, existingTags = activity.gameModel.currentPgnGame?.tags ?: emptyMap())
+
+        return PgnGameBuilder.build(
+            fens,
+            existingTags = activity.gameModel.currentPgnGame?.tags ?: emptyMap()
+        )
     }
 
     fun exportCurrentPgn() {
         try {
             val pgn = PgnExporter.export(buildExportGame())
+
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, pgn)
             }
-            activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.export_pgn)))
+
+            activity.startActivity(
+                Intent.createChooser(
+                    intent,
+                    activity.getString(R.string.export_pgn)
+                )
+            )
+
         } catch (e: Exception) {
             Log.e("PgnExport", "export failed", e)
         }
@@ -252,27 +593,57 @@ class ImportExportController(
 
     fun exportGameHistory() {
         val file = GameHistoryManager.exportGames(activity)
-        val uri = androidx.core.content.FileProvider.getUriForFile(activity, "${activity.packageName}.fileprovider", file)
+
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            activity,
+            "${activity.packageName}.fileprovider",
+            file
+        )
+
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "application/json"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.export_history)))
+
+        activity.startActivity(
+            Intent.createChooser(
+                intent,
+                activity.getString(R.string.export_history)
+            )
+        )
     }
 
     fun exportLearnedTemplates() {
         val file = ScreenshotImporter.getTemplateMatcher()?.exportCorrections()
+
         if (file == null) {
-            Snackbar.make(chessBoard, R.string.export_templates_empty, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                chessBoard,
+                R.string.export_templates_empty,
+                Snackbar.LENGTH_LONG
+            ).show()
             return
         }
-        val uri = androidx.core.content.FileProvider.getUriForFile(activity, "${activity.packageName}.fileprovider", file)
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "application/json"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.export_templates)))
-    }
+
+        val uri = androidx.core.content.FilePro
+        .getUriForFile(
+    activity,
+    "${activity.packageName}.fileprovider",
+    file
+)
+
+val intent = Intent(Intent.ACTION_SEND).apply {
+    type = "application/json"
+    putExtra(Intent.EXTRA_STREAM, uri)
+    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+}
+
+activity.startActivity(
+    Intent.createChooser(
+        intent,
+        activity.getString(R.string.export_templates)
+    )
+)
+}
 }
