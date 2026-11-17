@@ -290,6 +290,21 @@
     <string name="clock_time_fmt">%1$d:%2$02d</string>
     <string name="clock_enabled">تفعيل الساعة</string>
 
+    <!-- Online game import -->
+    <string name="import_chesscom">استيراد من Chess.com</string>
+    <string name="import_lichess">استيراد من Lichess</string>
+    <string name="import_username_title">استيراد المباريات</string>
+    <string name="import_username_hint">أدخل اسم المستخدم</string>
+    <string name="import_fetch_games">جلب المباريات</string>
+    <string name="import_fetching">جارٍ جلب المباريات…</string>
+    <string name="import_games_empty">لم يتم العثور على مباريات لهذا المستخدم.</string>
+    <string name="import_network_error">تعذّر الاتصال. تحقق من اتصالك بالإنترنت.</string>
+    <string name="import_invalid_username">يرجى إدخال اسم مستخدم صحيح.</string>
+    <string name="import_games_saved">تم استيراد المباريات بنجاح.</string>
+    <string name="imported_games_title">المباريات المستوردة</string>
+    <string name="import_game_open">فتح المباراة</string>
+    <string name="import_game_delete">حذف المباراة</string>
+
     <!-- Saved games -->
     <string name="saved_game_save">حفظ المباراة</string>
     <string name="saved_game_load">المباريات المحفوظة</string>
@@ -305,17 +320,4 @@
     <string name="saved_game_no_existing">لا توجد مباريات محفوظة بعد</string>
     <string name="saved_game_name_empty">يجب ألا يكون الاسم فارغاً.</string>
     <string name="saved_game_name_duplicate">توجد مباراة بهذا الاسم بالفعل — اخترها أعلاه لاستبدالها.</string>
-    <string name="saved_game_confirm_overwrite_title">استبدال المباراة المحفوظة؟</string>
-    <string name="saved_game_confirm_overwrite_message">هل تريد استبدال "%1$s" (%2$s) بالوضعية الحالية؟ لا يمكن استعادة المحتوى القديم.</string>
-    <string name="saved_game_confirm_delete_title">حذف المباراة المحفوظة؟</string>
-    <string name="saved_game_confirm_delete_message">هل تريد حذف "%1$s" نهائياً؟ لن تتأثر المباراة الجارية.</string>
-    <string name="saved_game_none">لا توجد مباريات محفوظة بعد.</string>
-    <string name="saved_game_saved">تم حفظ "%1$s".</string>
-    <string name="saved_game_loaded">تم تحميل "%1$s".</string>
-    <string name="saved_game_load_failed">تعذّر تحميل المباراة المحفوظة.</string>
-    <string name="saved_game_deleted">تم حذف "%1$s".</string>
-    <string name="saved_game_storage_error">فشل الحفظ — يُرجى المحاولة مجدداً.</string>
-    <string name="saved_game_blocked">الحفظ غير متاح في هذا الوضع.</string>
-    <string name="saved_game_load_blocked"> name="saved_game_load_blocked">تحميل المباريات غير متاح أثناء حل لغز.</string>
-    <string name="saved_game_row_fmt">%1$s · %2$d نقلة</string>
-</resources>
+    <string name="saved_game_confirm_overwrite_title">استبدال المباراة الم
