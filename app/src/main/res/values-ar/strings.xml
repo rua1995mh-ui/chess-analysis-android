@@ -1,0 +1,336 @@
+
+<resources>
+    <string name="app_name">Faris Chess</string>
+
+    <!-- Main screen -->
+    <string name="initializing">جارٍ التهيئة…</string>
+    <string name="analyzing">جارٍ التحليل…</string>
+    <string name="ready">جاهز</string>
+    <string name="engine_init_failed">فشل تشغيل محرك الشطرنج</string>
+    <string name="engine_thinking">المحرك يفكر…</string>
+    <string name="analyzing_fmt">جارٍ التحليل… %1$d/%2$d</string>
+    <string name="analysis_percent_fmt">جارٍ التحليل… %1$d%%</string>
+    <string name="review_fmt">المراجعة %1$d/%2$d</string>
+    <string name="check">كش!</string>
+    <string name="stalemate">تعادل بالخنق!</string>
+    <string name="checkmate_fmt">كش مات! فاز %1$s!</string>
+    <string name="color_white">الأبيض</string>
+    <string name="color_black">الأسود</string>
+    <string name="new_game">لعبة جديدة</string>
+
+    <!-- Game-over popup -->
+    <string name="reason_checkmate">كش مات</string>
+    <string name="reason_resignation">استسلام</string>
+    <string name="reason_timeout">انتهاء الوقت</string>
+    <string name="won_by_fmt">فاز %1$s بسبب %2$s</string>
+    <string name="start_analyzation">بدء التحليل</string>
+    <string name="review_board">مراجعة الرقعة</string>
+    <string name="analysis_complete">اكتمل التحليل</string>
+    <string name="accuracy_fmt">%1$.1f%%</string>
+    <string name="analysis_review_fmt">التحليل %1$d/%2$d</string>
+    <string name="analyze_game">تحليل المباراة</string>
+    <string name="reanalyze_game">إعادة التحليل وتحديث المباراة</string>
+    <string name="variation_fmt">التنويع %1$d</string>
+    <string name="review_exited">العودة إلى الوضع الحالي</string>
+    <string name="setup_board">إعداد الرقعة</string>
+    <string name="play_from_here">العب من هنا</string>
+
+    <!-- Play-from-here dialog -->
+    <string name="engine_strength_fmt">قوة المحرك: %1$s</string>
+    <string name="engine_plays">المحرك يلعب</string>
+    <string name="next_to_move">الدور على</string>
+    <string name="vs_engine">ضد المحرك</string>
+    <string name="analyze_manually">تحليل يدوي</string>
+
+    <!-- Settings drawer -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="gameplay">اللعب</string>
+    <string name="show_legal">إظهار الحركات القانونية المتاحة</string>
+    <string name="show_move_bars">إظهار أفضل 3 نقلات</string>
+    <string name="show_eval_bar">إظهار شريط تقييم الوضعية</string>
+    <string name="live_eval">إظهار جودة النقلة مباشرة</string>
+    <string name="board_theme">مظهر الرقعة</string>
+    <string name="pieces">القطع</string>
+    <string name="opponent_strength">قوة الخصم (ضد المحرك)</string>
+    <string name="strength_elo">القوة (ELO)</string>
+    <string name="elo_maximum">الحد الأقصى</string>
+
+    <!-- Board themes -->
+    <string name="theme_original">الأصلي</string>
+    <string name="theme_classic_brown">البني الكلاسيكي</string>
+    <string name="theme_ocean_blue">الأزرق المحيطي</string>
+
+    <!-- Analysis settings -->
+    <string name="analysis_depth">عمق التحليل</string>
+    <string name="show_analysis_arrows">إظهار أسهم أفضل النقلات أثناء التحليل</string>
+    <string name="piece_sounds">أصوات القطع</string>
+    <string name="sound_theme">نمط الصوت</string>
+    <string name="sound_theme_classic">كلاسيكي (صفير)</string>
+    <string name="sound_theme_wood">خشبي</string>
+    <string name="sound_theme_test">اختبار</string>
+    <string name="sound_theme_test_synth">اختبار اصطناعي</string>
+    <string name="game_history">سجل المباريات</string>
+    <string name="game_saved">تم حفظ المباراة في السجل</string>
+    <string name="analysis_updated">تم تحديث التحليل</string>
+    <string name="export_history">تصدير</string>
+    <string name="import_history">استيراد</string>
+    <string name="export_pgn">تصدير PGN</string>
+    <string name="export_templates">تصدير بيانات التعرّف المتعلّمة</string>
+    <string name="export_templates_empty">لا توجد بيانات متعلّمة بعد — صحّح صورة مستوردة أولاً</string>
+    <string name="import_done">اكتمل الاستيراد</string>
+    <string name="import_how_title">الاستيراد — كيف؟</string>
+    <string name="import_pgn_manual">إدخال PGN يدوياً</string>
+    <string name="import_upload_data">رفع ملف (PGN / FEN / صورة رقعة)</string>
+    <string name="import_pgn_hint">ألصق PGN هنا…</string>
+    <string name="import_load">تحميل</string>
+    <string name="import_pgn_none">لم يتم العثور على نقلات في ملف PGN.</string>
+    <string name="import_pgn_failed_fmt">تعذّرت قراءة النقلة %1$d "%2$s" — تم إيقاف الاستيراد.</string>
+    <string name="import_pgn_ok_fmt">تم استيراد %1$d نقلة.</string>
+    <string name="import_pgn_error">تعذّر استيراد ملف PGN.</string>
+    <string name="import_fen_ok">تم استيراد الوضعية.</string>
+    <string name="import_read_error">تعذّرت قراءة هذا الملف.</string>
+    <string name="share_target_label">تحليل المباراة</string>
+    <string name="import_screenshot_working">جارٍ قراءة الرقعة من الصورة…</string>
+    <string name="import_screenshot_none">لم يتم العثور على رقعة شطرنج — قصّ الصورة لتشمل الرقعة فقط ثم أعد المحاولة.</string>
+    <string name="import_screenshot_ok_fmt">تم التعرّف على %1$d قطعة — راجع الوضعية وصحّحها في الإعدادات، ثم اختر "العب من هنا".</string>
+    <string name="import_screenshot_ok">تم استيراد الرقعة — راجع الوضعية وصحّحها في الإعدادات، ثم اختر "العب من هنا".</string>
+    <string name="screenshot_uncertain">التعرّف على الرقعة من الصورة غير مؤكد — يُرجى التحقق</string>
+    <string name="flip_board">↻ قلب الرقعة</string>
+    <string name="invalid_position_for_engine">يجب أن تحتوي الرقعة على ملك واحد لكل لاعب — صحّح الوضعية في الإعدادات</string>
+
+    <!-- Piece styles -->
+    <string name="piece_original">الأصلي</string>
+    <string name="piece_classic_outline">المخطط الكلاسيكي</string>
+    <string name="piece_classic">الكلاسيكي</string>
+    <string name="piece_svg">قطع SVG</string>
+    <string name="piece_staunty">ستاوني</string>
+    <string name="piece_mpchess">MP Chess</string>
+
+    <!-- AI Coach Settings -->
+    <string name="ai_coach">المدرب الذكي</string>
+    <string name="ai_coach_subtitle">اختر طريقة شرح المدرب لنقلاتك</string>
+    <string name="ai_coach_gemma_1b_title">Gemma 3 1B (على الجهاز)</string>
+    <string name="ai_coach_gemma_1b_badge">موصى به · يعمل على معظم الأجهزة</string>
+    <string name="ai_coach_gemma_1b_desc">تنزيل نحو 600 ميغابايت · يحتاج إلى نحو 1.5 غيغابايت من الذاكرة</string>
+    <string name="ai_coach_gemma_3b_title">Gemma 3 4B (على الجهاز)</string>
+    <string name="ai_coach_gemma_3b_badge">أفضل جودة على الجهاز · للأجهزة الرائدة فقط</string>
+    <string name="ai_coach_gemma_3b_desc">تنزيل نحو 2.5 غيغابايت · يحتاج إلى نحو 5 غيغابايت من الذاكرة</string>
+    <string name="ai_coach_gemma_3b_warning">قد لا تكون إمكانيات جهازك كافية</string>
+    <string name="ai_coach_gemma_3b_tooltip">يوصى بمعالج Snapdragon 8 Gen 3 أو ما يعادله، مع ذاكرة عشوائية لا تقل عن 12 غيغابايت. تحقق من مواصفات جهازك قبل اختيار هذا الخيار.</string>
+    <string name="ai_coach_model_source_title">مصدر النموذج</string>
+    <string name="ai_coach_choose_folder">اختر مجلداً…</string>
+    <string name="ai_coach_pick_downloaded">اختيار نموذج تم تنزيله</string>
+    <string name="ai_coach_custom_model_fmt">نموذج مخصص: %1$s</string>
+    <string name="ai_coach_no_model_in_folder">لم يتم العثور على نموذج بامتداد .gguf في هذا المجلد.</string>
+    <string name="ai_coach_no_file_picker">لا يوجد تطبيق لاختيار الملفات على هذا الجهاز.</string>
+    <string name="ai_coach_storage_permission">يلزم إذن الوصول إلى التخزين لحفظ النموذج في مجلد التنزيلات.</string>
+    <string name="ai_coach_api_title">مفتاح API مخصص</string>
+    <string name="ai_coach_api_badge">أفضل جودة · تكلفة منخفضة</string>
+    <string name="ai_coach_api_desc">لا يحتاج إلى تنزيل · لا يستهلك ذاكرة الجهاز · يتطلب الإنترنت</string>
+    <string name="ai_coach_api_get_key">الحصول على مفتاح API ←</string>
+    <string name="ai_coach_api_test">اختبار الاتصال</string>
+    <string name="ai_coach_api_test_success">✓ تم الاتصال بنجاح</string>
+    <string name="ai_coach_api_test_fail">فشل الاتصال: %1$s</string>
+    <string name="ai_coach_api_hint">مفتاح API / الرمز</string>
+    <string name="ai_coach_api_base_hint">عنوان URL الأساسي (مثال: http://YOUR_IP_HERE:1234/v1)</string>
+    <string name="ai_coach_api_model_hint">اسم النموذج</string>
+    <string name="ai_coach_api_save">حفظ</string>
+    <string name="ai_coach_api_testing">جارٍ اختبار الاتصال…</string>
+    <string name="ai_coach_api_provider_detected">تم التعرف على %1$s — سلسلة البدائل المجانية الخاصة به مفعّلة.</string>
+    <string name="ai_coach_api_example_fmt">مثال (%1$s):\nالرابط الأساسي: %2$s\nالنموذج: %3$s\nالمفتاح: %4$s</string>
+    <string name="ai_coach_api_key_lmstudio">أي نص، أو رمز LM Studio الخاص بك</string>
+    <string name="ai_coach_api_key_secret">مفتاحك السري</string>
+    <string name="ai_coach_lichess_title">تحليل Lichess</string>
+    <string name="ai_coach_lichess_badge">مجاني · لا يحتاج إلى تنزيل</string>
+    <string name="ai_coach_lichess_desc">مستضاف خارجياً · لا يتطلب التسجيل</string>
+    <string name="ai_coach_lichess_info">يوفر تحليل Lichess تعليقات تقنية من المحرك دون شروحات باللغة الطبيعية؛ لذلك فهو أقل شبهاً بالمدرب، لكنه موثوق ومجاني.</string>
+    <string name="ai_coach_lichess_got_it">فهمت</string>
+    <string name="ai_coach_download_dialog_title">تنزيل %1$s</string>
+    <string name="ai_coach_download_dialog_msg">سيتم تنزيل %1$s (نحو %2$s ميغابايت). تأكد من اتصالك بشبكة Wi-Fi. يُحفظ النموذج محلياً ويعمل بالكامل على الجهاز، كما يمكنك استخدامه دون إنترنت. سيتم تحميله تلقائياً عند اكتمال التنزيل، دون الحاجة إلى إعادة تشغيل التطبيق.</string>
+    <string name="ai_coach_download_dialog_download">نزّل الآن</string>
+    <string name="ai_coach_download_dialog_cancel">إلغاء</string>
+    <string name="ai_coach_downloading_fmt">جارٍ التنزيل… %1$d%%</string>
+    <string name="ai_coach_installed">✓ تم التثبيت</string>
+    <string name="ai_coach_download_complete">تم تثبيت النموذج وأصبح جاهزاً.</string>
+    <string name="ai_coach_fallback_snackbar">لم يتم تثبيت Gemma بعد — سيتم استخدام Lichess كبديل.</string>
+
+    <string name="book_download_title">كتاب الافتتاحيات</string>
+    <string name="book_download_message">هل تريد تنزيل كتاب الافتتاحيات (نحو %1$d ميغابايت) للتعرف على نقلات الافتتاحيات وأسمائها دون إنترنت؟ من دونه، لن يتم التعرف إلا على أولى النقلات القياسية.</string>
+    <string name="book_download_yes">تنزيل</string>
+    <string name="book_download_skip">ليس الآن</string>
+    <string name="book_downloading">جارٍ تنزيل كتاب الافتتاحيات…</string>
+    <string name="book_downloading_fmt">جارٍ تنزيل كتاب الافتتاحيات… %1$d/%2$d</string>
+    <string name="book_download_done">تم تثبيت كتاب الافتتاحيات.</string>
+    <string name="book_download_failed">فشل تنزيل كتاب الافتتاحيات — سيتم استخدام الكتاب المصغر المدمج.</string>
+
+    <string name="learn_theory">تعلم النظريات</string>
+    <string name="theory_pick_title">اختر افتتاحية</string>
+    <string name="theory_loading">جارٍ تحميل النظريات…</string>
+    <string name="theory_none">لا تتوفر بيانات للنظريات.</string>
+    <string name="theory_white_plan">خطة الأبيض</string>
+    <string name="theory_black_plan">خطة الأسود</string>
+    <string name="theory_continuations">إذا لعب الخصم</string>
+    <string name="theory_left_line_fmt">لقد خرجت عن خط %1$s.</string>
+    <string name="theory_transposes_fmt">تتحول هذه الوضعية إلى %1$s.</string>
+    <string name="theory_still_book">ما زالت هذه النقلة ضمن النقلات المعروفة في الافتتاحية.</string>
+    <string name="theory_off_book">هذه النقلة ليست ضمن النظريات المعروفة في هذه الوضعية.</string>
+    <string name="theory_engine_label">المحرك</string>
+    <string name="theory_better_move_fmt">كانت النقلة الأفضل هي %1$s</string>
+
+    <string name="coach_title">المدرب الذكي</string>
+    <string name="coach_thinking">المدرب يفكر…</string>
+    <string name="coach_writing_fmt">جارٍ الكتابة… %1$.1f كلمة/ثانية</string>
+    <string name="coach_tps_fmt">%1$.1f كلمة/ثانية</string>
+    <string name="coach_disabled">المدرب الذكي متوقف — يمكنك تفعيله من الإعدادات.</string>
+    <!-- AICOACH-2 toggle -->
+    <string name="ai_coach_toggle">مدرب ذكاء اصطناعي يعمل على الجهاز</string>
+    <string name="ai_coach_build_disabled">غير متاح (تم بناء التطبيق دون مشغل أصلي)</string>
+    <string name="ai_coach_on">تشغيل</string>
+    <string name="ai_coach_off">إيقاف</string>
+    <!-- AICOACH-3 loading status -->
+    <string name="coach_loading">جارٍ تحميل نموذج الذكاء الاصطناعي…</string>
+    <string name="coach_active">المدرب الذكي نشط</string>
+    <string name="coach_failed">فشل تحميل نموذج الذكاء الاصطناعي</string>
+    <string name="coach_copied">تم نسخ نص المدرب</string>
+    <string name="display_options">خيارات العرض</string>
+    <!-- Coach factual comment (localized) -->
+    <string name="coach_white">الأبيض</string>
+    <string name="coach_black">الأسود</string>
+    <string name="coach_better_was_fmt">كانت النقلة الأفضل %1$s (%2$s)</string>
+    <string name="coach_gives_up_fmt"> — ويخسر %1$s من البيادق</string>
+    <string name="coach_missed_fmt">فاتتك: %1$s</string>
+
+    <string name="mc_brilliant">عبقرية</string>
+    <string name="mc_great">رائعة</string>
+    <string name="mc_best">الأفضل</string>
+    <string name="mc_excellent">ممتازة</string>
+    <string name="mc_good">جيدة</string>
+    <string name="mc_book">نقلة نظرية</string>
+    <string name="mc_inaccuracy">غير دقيقة</string>
+    <string name="mc_mistake">خطأ</string>
+    <string name="mc_miss">فرصة ضائعة</string>
+    <string name="mc_blunder">خطأ فادح</string>
+
+    <!-- Tactic descriptions (localized) -->
+    <string name="tactic_check_prefix">كش: </string>
+    <string name="tactic_mate_fmt">كش مات خلال %1$d نقلات</string>
+    <string name="tactic_win_queen">الفوز بالوزير</string>
+    <string name="tactic_win_rook">الفوز بالقلعة</string>
+    <string name="tactic_win_minor">الفوز بقطعة خفيفة</string>
+    <string name="tactic_win_pawn">الفوز ببيدق</string>
+    <string name="tactic_missed_cp_fmt">+%1$s بيادق</string>
+
+    <!-- Puzzles -->
+    <string name="puzzles">الألغاز</string>
+    <string name="puzzle_setup_title">إعداد الألغاز</string>
+    <string name="puzzle_elo_min">أقل تقييم</string>
+    <string name="puzzle_elo_max">أعلى تقييم</string>
+    <string name="puzzle_themes">التصنيفات</string>
+    <string name="puzzle_select_all">تحديد الكل</string>
+    <string name="puzzle_deselect_all">إلغاء التحديد</string>
+    <string name="puzzle_start">ابدأ اللغز</string>
+    <string name="puzzle_loading">جارٍ تحميل الألغاز…</string>
+    <string name="puzzle_none_found">لا توجد ألغاز تطابق اختياراتك.</string>
+    <string name="puzzle_rating_fmt">التقييم: %1$d</string>
+    <string name="puzzle_solved">✓ تم الحل</string>
+    <string name="puzzle_wrong">خطأ!</string>
+    <string name="puzzle_correct_move">✓ صحيح!</string>
+    <string name="puzzle_retry">حاول مجدداً</string>
+    <string name="puzzle_give_up">إظهار الحل</string>
+    <string name="puzzle_next">اللغز التالي</string>
+    <string name="puzzle_your_move">نقلتك:</string>
+    <string name="puzzle_correct_move_was">النقلة الصحيحة:</string>
+    <string name="puzzle_complete">اكتمل اللغز!</string>
+    <string name="puzzle_progress_fmt">تم الحل: %1$d/%2$d</string>
+    <string name="puzzle_load_more">تنزيل المزيد من الألغاز</string>
+    <string name="puzzle_download_title">تنزيل الألغاز</string>
+    <string name="puzzle_download_msg">هل تريد تنزيل ألغاز إضافية من Lichess؟ سيُستخدم اتصال بيانات الهاتف إذا لم تتوفر شبكة Wi-Fi.</string>
+    <string name="puzzle_download_start">تنزيل</string>
+    <string name="puzzle_downloading_fmt">جارٍ تنزيل الألغاز… %1$d%%</string>
+    <string name="puzzle_download_done">تم تنزيل %1$d لغزاً.</string>
+    <string name="puzzle_download_failed">فشل تنزيل الألغاز. تحقق من اتصالك وحاول مجدداً.</string>
+    <string name="puzzle_back">← العودة إلى الألغاز</string>
+    <string name="puzzle_theme_mate_basic">الكش مات</string>
+    <string name="puzzle_theme_mate_in_n">كش مات خلال عدد من النقلات</string>
+    <string name="puzzle_theme_mate_patterns">أنماط الكش مات</string>
+    <string name="puzzle_theme_forks_pins">الشوكة والتثبيت والكشف</string>
+    <string name="puzzle_theme_discovered">الهجوم المكتشف والكش المزدوج</string>
+    <string name="puzzle_theme_deflection">الإبعاد والاستدراج</string>
+    <string name="puzzle_theme_hanging">القطع المهددة والقطع المحاصرة</string>
+    <string name="puzzle_theme_king_attack">الهجوم على الملك</string>
+    <string name="puzzle_theme_sacrifice">التضحية</string>
+    <string name="puzzle_theme_quiet">النقلات الهادئة والدفاعية</string>
+    <string name="puzzle_theme_pawns">لعب البيادق</string>
+    <string name="puzzle_theme_endgame">نهاية المباراة</string>
+    <string name="puzzle_theme_phase">مرحلة المباراة</string>
+    <string name="puzzle_theme_length">طول الحل</string>
+    <string name="puzzle_count">عدد الألغاز</string>
+    <string name="puzzle_count_infinite">غير محدود</string>
+    <string name="puzzle_review">مراجعة</string>
+    <string name="puzzle_finish">إنهاء</string>
+    <string name="puzzle_review_title">مراجعة اللغز</string>
+    <string name="puzzle_remaining_fmt">المتبقي: %1$d</string>
+    <string name="puzzle_show_theme">إظهار تصنيف اللغز</string>
+    <string name="puzzle_try_again">حاول مرة أخرى</string>
+    <string name="puzzle_wrong_msg">هذه ليست الإجابة الصحيحة. حاول مجدداً أو اعرض الحل.</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">الإحصائيات</string>
+    <string name="dashboard_games">المباريات</string>
+    <string name="dashboard_avg_accuracy">متوسط الدقة</string>
+    <string name="dashboard_blunder_per_game">الأخطاء الفادحة لكل مباراة</string>
+    <string name="dashboard_puzzles_solved">الألغاز المحلولة</string>
+    <string name="dashboard_solve_rate">نسبة الحل</string>
+
+    <!-- Resign / Clock -->
+    <string name="btn_resign">استسلام</string>
+    <string name="clock_title">الساعة</string>
+    <string name="clock_minutes">الدقائق</string>
+    <string name="clock_increment">الزيادة (ثانية)</string>
+    <string name="clock_time_fmt">%1$d:%2$02d</string>
+    <string name="clock_enabled">تفعيل الساعة</string>
+
+    <!-- Online game import -->
+    <string name="import_chesscom">استيراد من Chess.com</string>
+    <string name="import_lichess">استيراد من Lichess</string>
+    <string name="import_username_title">استيراد المباريات</string>
+    <string name="import_username_hint">أدخل اسم المستخدم</string>
+    <string name="import_fetch_games">جلب المباريات</string>
+    <string name="import_fetching">جارٍ جلب المباريات…</string>
+    <string name="import_games_empty">لم يتم العثور على مباريات لهذا المستخدم.</string>
+    <string name="import_network_error">تعذّر الاتصال. تحقق من اتصالك بالإنترنت.</string>
+    <string name="import_invalid_username">يرجى إدخال اسم مستخدم صحيح.</string>
+    <string name="import_games_saved">تم استيراد المباريات بنجاح.</string>
+    <string name="imported_games_title">المباريات المستوردة</string>
+    <string name="import_game_open">فتح المباراة</string>
+    <string name="import_game_delete">حذف المباراة</string>
+
+    <!-- Saved games -->
+    <string name="saved_game_save">حفظ المباراة</string>
+    <string name="saved_game_load">المباريات المحفوظة</string>
+    <string name="saved_game_save_cd">احفظ المباراة الحالية باسم تختاره</string>
+    <string name="saved_game_load_cd">تحميل مباراة محفوظة أو حذفها</string>
+    <string name="saved_game_save_ok">حفظ</string>
+    <string name="saved_game_cancel">إلغاء</string>
+    <string name="saved_game_delete">حذف</string>
+    <string name="saved_game_ok">موافق</string>
+    <string name="saved_game_new_name">اسم جديد</string>
+    <string name="saved_game_overwrite">استبدال الموجود</string>
+    <string name="saved_game_name_hint">اسم المباراة</string>
+    <string name="saved_game_no_existing">لا توجد مباريات محفوظة بعد</string>
+    <string name="saved_game_name_empty">يجب ألا يكون الاسم فارغاً.</string>
+    <string name="saved_game_name_duplicate">توجد مباراة بهذا الاسم بالفعل — اخترها أعلاه لاستبدالها.</string>
+    <string name="saved_game_confirm_overwrite_title">استبدال المباراة المحفوظة؟</string>
+    <string name="saved_game_confirm_overwrite_message">هل تريد استبدال "%1$s" (%2$s) بالوضعية الحالية؟ لا يمكن استعادة المحتوى القديم.</string>
+    <string name="saved_game_confirm_delete_title">حذف المباراة المحفوظة؟</string>
+    <string name="saved_game_confirm_delete_message">هل تريد حذف "%1$s" نهائياً؟ لن تتأثر المباراة الجارية.</string>
+    <string name="saved_game_none">لا توجد مباريات محفوظة بعد.</string>
+    <string name="saved_game_saved">تم حفظ "%1$s".</string>
+    <string name="saved_game_loaded">تم تحميل "%1$s".</string>
+    <string name="saved_game_load_failed">تعذّر تحميل المباراة المحفوظة.</string>
+    <string name="saved_game_deleted">تم حذف "%1$s".</string>
+    <string name="saved_game_storage_error">فشل الحفظ — يُرجى المحاولة مرة أخرى.</string>
+    <string name="saved_game_blocked">الحفظ معطّل في هذا الوضع.</string>
+    <string name="saved_game_load_blocked">لا يمكن تحميل مباراة أثناء وجود لغز نشط.</string>
+    <string name="saved_game_row_fmt">%1$s · %2$d نقلة</string>
+</resources>
