@@ -320,4 +320,17 @@
     <string name="saved_game_no_existing">لا توجد مباريات محفوظة بعد</string>
     <string name="saved_game_name_empty">يجب ألا يكون الاسم فارغاً.</string>
     <string name="saved_game_name_duplicate">توجد مباراة بهذا الاسم بالفعل — اخترها أعلاه لاستبدالها.</string>
-    <string name="saved_game_confirm_overwrite_title">استبدال المباراة الم
+    <string name="saved_game_confirm_overwrite_title">استبدال المباراة المحفوظة؟</string>
+    <string name="saved_game_confirm_overwrite_message">هل تريد استبدال "%1$s" (%2$s) بالوضعية الحالية؟ لا يمكن استعادة المحتوى القديم.</string>
+    <string name="saved_game_confirm_delete_title">حذف المباراة المحفوظة؟</string>
+    <string name="saved_game_confirm_delete_message">هل تريد حذف "%1$s" نهائياً؟ لن تتأثر المباراة الجارية.</string>
+    <string name="saved_game_none">لا توجد مباريات محفوظة بعد.</string>
+    <string name="saved_game_saved">تم حفظ "%1$s".</string>
+    <string name="saved_game_loaded">تم تحميل "%1$s".</string>
+    <string name="saved_game_load_failed">تعذّر تحميل المباراة المحفوظة.</string>
+    <string name="saved_game_deleted">تم حذف "%1$s".</string>
+    <string name="saved_game_storage_error">فشل الحفظ — يُرجى المحاولة مرة أخرى.</string>
+    <string name="saved_game_blocked">الحفظ معطّل في هذا الوضع.</string>
+    <string name="saved_game_load_blocked">لا يمكن تحميل مباراة أثناء وجود لغز نشط.</string>
+    <string name="saved_game_row_fmt">%1$s · %2$d نقلة</string>
+</resources>
