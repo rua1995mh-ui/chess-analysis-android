@@ -1,4 +1,3 @@
-
 package com.example.chessanalysis.controller
 
 import android.content.Intent
@@ -209,8 +208,7 @@ class ImportExportController(
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
-
-    fun showPgnPasteDialog() {
+        fun showPgnPasteDialog() {
         val input = EditText(activity).apply {
             hint = activity.getString(R.string.import_pgn_hint)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -463,8 +461,7 @@ class ImportExportController(
         chessBoard.board.map { row ->
             row.map { it?.copy() }.toTypedArray()
         }.toTypedArray()
-
-    fun importPgnText(text: String) {
+            fun importPgnText(text: String) {
         try {
             val game = PgnImporter.parse(text)
 
@@ -626,26 +623,23 @@ class ImportExportController(
             return
         }
 
-    val uri =
-        androidx.core.content.FileProvider.getUriForFile
-        (
-         activity,
-    "${activity.packageName}.fileprovider",
-    file
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            activity,
+            "${activity.packageName}.fileprovider",
+            file
+        )
 
-)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/json"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
 
-val intent = Intent(Intent.ACTION_SEND).apply {
-    type = "application/json"
-    putExtra(Intent.EXTRA_STREAM, uri as android.os.Parcelable)
-    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-}
-
-activity.startActivity(
-    Intent.createChooser(
-        intent,
-        activity.getString(R.string.export_templates)
-    )
-)
-}
+        activity.startActivity(
+            Intent.createChooser(
+                intent,
+                activity.getString(R.string.export_templates)
+            )
+        )
+    }
 }
