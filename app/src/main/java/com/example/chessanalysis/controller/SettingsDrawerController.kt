@@ -1,3 +1,4 @@
+
 package com.example.chessanalysis.controller
 
 import android.graphics.Color
@@ -42,19 +43,20 @@ class SettingsDrawerController(
     lateinit var swAnalysisArrows: SwitchCompat
 
     companion object {
-        // Rendered on the hardcoded-white end drawer; must stay dark even in dark mode (white-on-white bug).
+        // Rendered on the hardcoded-white end drawer; must stay dark even in dark mode.
         internal val DRAWER_TEXT_COLOR = 0xFF212121.toInt()
         internal val DRAWER_RADIO_ACTIVE = 0xFF1976D2.toInt()
         internal val DRAWER_RADIO_IDLE = 0xFF616161.toInt()
 
-        internal fun drawerRadioButton(activity: android.app.Activity, text: String): RadioButton =
+        internal fun drawerRadioButton(
+            activity: android.app.Activity,
+            text: String
+        ): RadioButton =
             RadioButton(activity).apply {
                 this.text = text
                 textSize = 15f
                 setTextColor(DRAWER_TEXT_COLOR)
-                // The unselected radio ball is normally tinted with colorControlNormal, which is white in
-                // dark mode → invisible on the white drawer (only the selected ball showed). Pin explicit
-                // colors for both states.
+
                 buttonTintList = android.content.res.ColorStateList(
                     arrayOf(
                         intArrayOf(android.R.attr.state_checked),
@@ -84,13 +86,17 @@ class SettingsDrawerController(
             }
         }
 
-        val moveBarsContainer = activity.findViewById<View>(R.id.moveBarsContainer)
+        val moveBarsContainer =
+            activity.findViewById<View>(R.id.moveBarsContainer)
         val showMoveBars = settingsRepo.moveBarsEnabled
-        moveBarsContainer.visibility = if (showMoveBars) View.VISIBLE else View.GONE
+        moveBarsContainer.visibility =
+            if (showMoveBars) View.VISIBLE else View.GONE
+
         activity.findViewById<SwitchCompat>(R.id.swMoveBars).apply {
             isChecked = showMoveBars
             setOnCheckedChangeListener { _, checked ->
-                moveBarsContainer.visibility = if (checked) View.VISIBLE else View.GONE
+                moveBarsContainer.visibility =
+                    if (checked) View.VISIBLE else View.GONE
                 settingsRepo.moveBarsEnabled = checked
             }
         }
@@ -111,40 +117,61 @@ class SettingsDrawerController(
             setOnCheckedChangeListener { _, checked ->
                 gameModel.liveEvalEnabled = checked
                 settingsRepo.liveEvalEnabled = checked
+
                 if (!checked && !gameModel.analysisMode) {
-                    chessBoard.moveBadge = null; chessBoard.moveBadgeSquare = null
-                    chessBoard.moveBadge2 = null; chessBoard.moveBadgeSquare2 = null
+                    chessBoard.moveBadge = null
+                    chessBoard.moveBadgeSquare = null
+                    chessBoard.moveBadge2 = null
+                    chessBoard.moveBadgeSquare2 = null
                 }
             }
         }
 
         val activeTheme = BoardThemes.byId(settingsRepo.boardThemeId)
         chessBoard.boardTheme = activeTheme
-        val rgBoard = activity.findViewById<RadioGroup>(R.id.rgBoardTheme)
+
+        val rgBoard =
+            activity.findViewById<RadioGroup>(R.id.rgBoardTheme)
+
         for (theme in BoardThemes.all) {
-            val rb = drawerRadioButton(activity, activity.getString(theme.nameRes)).apply {
+            val rb = drawerRadioButton(
+                activity,
+                activity.getString(theme.nameRes)
+            ).apply {
                 id = View.generateViewId()
                 isChecked = theme.id == activeTheme.id
+
                 setOnClickListener {
                     chessBoard.boardTheme = theme
                     settingsRepo.boardThemeId = theme.id
                 }
             }
+
             rgBoard.addView(rb)
         }
 
-        val activeStyle = PieceStyle.byId(settingsRepo.pieceStyleId)
+        val activeStyle =
+            PieceStyle.byId(settingsRepo.pieceStyleId)
+
         chessBoard.pieceStyle = activeStyle
-        val rgPiece = activity.findViewById<RadioGroup>(R.id.rgPieceStyle)
+
+        val rgPiece =
+            activity.findViewById<RadioGroup>(R.id.rgPieceStyle)
+
         for (style in PieceStyle.entries) {
-            val rb = drawerRadioButton(activity, activity.getString(style.nameRes)).apply {
+            val rb = drawerRadioButton(
+                activity,
+                activity.getString(style.nameRes)
+            ).apply {
                 id = View.generateViewId()
                 isChecked = style == activeStyle
+
                 setOnClickListener {
                     chessBoard.pieceStyle = style
                     settingsRepo.pieceStyleId = style.id
                 }
             }
+
             rgPiece.addView(rb)
         }
 
@@ -153,11 +180,13 @@ class SettingsDrawerController(
             activity.findViewById(R.id.llToggles),
             activity.getString(R.string.display_options)
         )
+
         setupCollapsibleHeader(
             activity.findViewById(R.id.tvBoardThemeHeader),
             rgBoard,
             activity.getString(R.string.board_theme)
         )
+
         setupCollapsibleHeader(
             activity.findViewById(R.id.tvPiecesHeader),
             rgPiece,
@@ -167,89 +196,170 @@ class SettingsDrawerController(
         EngineHolder.engine.setElo(StockfishEngine.MAX_ELO)
 
         gameModel.gameElo = settingsRepo.gameElo
+
         tvEloValue = activity.findViewById(R.id.tvEloValue)
         sbElo = activity.findViewById(R.id.sbElo)
-        sbElo.max = (StockfishEngine.MAX_ELO - StockfishEngine.MIN_ELO) / 50
-        sbElo.progress = (gameModel.gameElo - StockfishEngine.MIN_ELO) / 50
-        tvEloValue.text = SettingsRepository.eloLabel(gameModel.gameElo)
+
+        sbElo.max =
+            (StockfishEngine.MAX_ELO - StockfishEngine.MIN_ELO) / 50
+
+        sbElo.progress =
+            (gameModel.gameElo - StockfishEngine.MIN_ELO) / 50
+
+        tvEloValue.text =
+            SettingsRepository.eloLabel(gameModel.gameElo)
+
         sbElo.setOnTouchListener { v, e ->
-            if (e.actionMasked == MotionEvent.ACTION_DOWN || e.actionMasked == MotionEvent.ACTION_MOVE)
+            if (
+                e.actionMasked == MotionEvent.ACTION_DOWN ||
+                e.actionMasked == MotionEvent.ACTION_MOVE
+            ) {
                 v.parent?.requestDisallowInterceptTouchEvent(true)
-            else if (e.actionMasked == MotionEvent.ACTION_UP || e.actionMasked == MotionEvent.ACTION_CANCEL)
+            } else if (
+                e.actionMasked == MotionEvent.ACTION_UP ||
+                e.actionMasked == MotionEvent.ACTION_CANCEL
+            ) {
                 v.parent?.requestDisallowInterceptTouchEvent(false)
+            }
+
             false
         }
-        sbElo.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
-                tvEloValue.text = SettingsRepository.eloLabel(StockfishEngine.MIN_ELO + progress * 50)
-            }
-            override fun onStartTrackingTouch(sb: SeekBar?) {}
-            override fun onStopTrackingTouch(sb: SeekBar?) {
-                gameModel.gameElo = StockfishEngine.MIN_ELO + (sb?.progress ?: 0) * 50
-                settingsRepo.gameElo = gameModel.gameElo
-            }
-        })
 
-        tvAnalysisDepthHeader = activity.findViewById(R.id.tvAnalysisDepthHeader)
-        tvDepthValue = activity.findViewById(R.id.tvDepthValue)
-        sbAnalysisDepth = activity.findViewById(R.id.sbAnalysisDepth)
+        sbElo.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+
+                override fun onProgressChanged(
+                    sb: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    tvEloValue.text =
+                        SettingsRepository.eloLabel(
+                            StockfishEngine.MIN_ELO + progress * 50
+                        )
+                }
+
+                override fun onStartTrackingTouch(sb: SeekBar?) {}
+
+                override fun onStopTrackingTouch(sb: SeekBar?) {
+                    gameModel.gameElo =
+                        StockfishEngine.MIN_ELO +
+                        (sb?.progress ?: 0) * 50
+
+                    settingsRepo.gameElo = gameModel.gameElo
+                }
+            }
+        )
+
+        tvAnalysisDepthHeader =
+            activity.findViewById(R.id.tvAnalysisDepthHeader)
+
+        tvDepthValue =
+            activity.findViewById(R.id.tvDepthValue)
+
+        sbAnalysisDepth =
+            activity.findViewById(R.id.sbAnalysisDepth)
+
         val currentDepth = settingsRepo.analysisDepth
+
         sbAnalysisDepth.apply {
             progress = currentDepth - 1
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(sb: SeekBar?, p: Int, fromUser: Boolean) {
-                    tvDepthValue.text = (p + 1).toString()
+
+            setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+
+                    override fun onProgressChanged(
+                        sb: SeekBar?,
+                        p: Int,
+                        fromUser: Boolean
+                    ) {
+                        tvDepthValue.text = (p + 1).toString()
+                    }
+
+                    override fun onStartTrackingTouch(sb: SeekBar?) {}
+
+                    override fun onStopTrackingTouch(sb: SeekBar?) {
+                        settingsRepo.analysisDepth =
+                            (sb?.progress ?: 15) + 1
+                    }
                 }
-                override fun onStartTrackingTouch(sb: SeekBar?) {}
-                override fun onStopTrackingTouch(sb: SeekBar?) {
-                    settingsRepo.analysisDepth = (sb?.progress ?: 15) + 1
-                }
-            })
+            )
         }
+
         tvDepthValue.text = currentDepth.toString()
 
-        swAnalysisArrows = activity.findViewById(R.id.swAnalysisArrows)
-        gameModel.analysisArrowsEnabled = settingsRepo.analysisArrowsEnabled
-        swAnalysisArrows.isChecked = gameModel.analysisArrowsEnabled
+        swAnalysisArrows =
+            activity.findViewById(R.id.swAnalysisArrows)
+
+        gameModel.analysisArrowsEnabled =
+            settingsRepo.analysisArrowsEnabled
+
+        swAnalysisArrows.isChecked =
+            gameModel.analysisArrowsEnabled
+
         swAnalysisArrows.setOnCheckedChangeListener { _, checked ->
             gameModel.analysisArrowsEnabled = checked
             settingsRepo.analysisArrowsEnabled = checked
-            if (!checked) chessBoard.bestMoveArrow = null
+
+            if (!checked) {
+                chessBoard.bestMoveArrow = null
+            }
         }
 
-        val swPieceSounds = activity.findViewById<SwitchCompat>(R.id.swPieceSounds)
-        soundManager.pieceSoundsEnabled = settingsRepo.pieceSoundsEnabled
-        swPieceSounds.isChecked = soundManager.pieceSoundsEnabled
+        val swPieceSounds =
+            activity.findViewById<SwitchCompat>(R.id.swPieceSounds)
+
+        soundManager.pieceSoundsEnabled =
+            settingsRepo.pieceSoundsEnabled
+
+        swPieceSounds.isChecked =
+            soundManager.pieceSoundsEnabled
+
         swPieceSounds.setOnCheckedChangeListener { _, checked ->
             soundManager.pieceSoundsEnabled = checked
             settingsRepo.pieceSoundsEnabled = checked
         }
 
-        val rgSound = activity.findViewById<RadioGroup>(R.id.rgSoundTheme)
+        val rgSound =
+            activity.findViewById<RadioGroup>(R.id.rgSoundTheme)
+
         for (t in SoundTheme.entries) {
-            val rb = drawerRadioButton(activity, activity.getString(t.labelRes)).apply {
+            val rb = drawerRadioButton(
+                activity,
+                activity.getString(t.labelRes)
+            ).apply {
                 id = View.generateViewId()
                 isChecked = t == soundManager.soundTheme
+
                 setOnClickListener {
                     soundManager.soundTheme = t
                     settingsRepo.soundThemeId = t.id
                     soundManager.loadTheme(t)
                 }
             }
+
             rgSound.addView(rb)
         }
+
         setupCollapsibleHeader(
             activity.findViewById(R.id.tvSoundThemeHeader),
             rgSound,
             activity.getString(R.string.sound_theme)
         )
 
-        val llPuzzles = activity.findViewById<LinearLayout>(R.id.llPuzzles)
-        val swPuzzleShowTheme = activity.findViewById<SwitchCompat>(R.id.swPuzzleShowTheme)
-        swPuzzleShowTheme.isChecked = settingsRepo.puzzleShowTheme
+        val llPuzzles =
+            activity.findViewById<LinearLayout>(R.id.llPuzzles)
+
+        val swPuzzleShowTheme =
+            activity.findViewById<SwitchCompat>(R.id.swPuzzleShowTheme)
+
+        swPuzzleShowTheme.isChecked =
+            settingsRepo.puzzleShowTheme
+
         swPuzzleShowTheme.setOnCheckedChangeListener { _, checked ->
             settingsRepo.puzzleShowTheme = checked
         }
+
         setupCollapsibleHeader(
             activity.findViewById(R.id.tvPuzzlesHeader),
             llPuzzles,
@@ -259,62 +369,166 @@ class SettingsDrawerController(
         activity.aiCoachController.setupAiCoachSection()
     }
 
+    // Language selector: English, German, and Arabic.
     fun setupLanguageToggle() {
-        val en = activity.findViewById<TextView>(R.id.langEn)
-        val de = activity.findViewById<TextView>(R.id.langDe)
-        val isGerman = AppCompatDelegate.getApplicationLocales().toLanguageTags().startsWith("de")
+        val en =
+            activity.findViewById<TextView>(R.id.langEn)
+
+        val de =
+            activity.findViewById<TextView>(R.id.langDe)
+
+        val ar =
+            activity.findViewById<TextView>(R.id.langAr)
+
+        val currentLanguage =
+            AppCompatDelegate.getApplicationLocales().toLanguageTags()
+
+        val isGerman = currentLanguage.startsWith("de")
+        val isArabic = currentLanguage.startsWith("ar")
+        val isEnglish = !isGerman && !isArabic
+
         val d = activity.resources.displayMetrics.density
         val accent = 0xFF1976D2.toInt()
 
-        en.background = ViewFactory.segBg(!isGerman, left = true, d)
-        de.background = ViewFactory.segBg(isGerman, left = false, d)
-        en.setTextColor(if (!isGerman) Color.WHITE else accent)
-        de.setTextColor(if (isGerman) Color.WHITE else accent)
+        // Update selected backgrounds.
+        en.background =
+            ViewFactory.segBg(isEnglish, left = true, d)
 
-        en.setOnClickListener { if (isGerman) setAppLanguage("en") }
-        de.setOnClickListener { if (!isGerman) setAppLanguage("de") }
+        de.background =
+            ViewFactory.segBg(isGerman, left = false, d)
+
+        ar.background =
+            ViewFactory.segBg(isArabic, left = false, d)
+
+        // Update text colors.
+        en.setTextColor(
+            if (isEnglish) Color.WHITE else accent
+        )
+
+        de.setTextColor(
+            if (isGerman) Color.WHITE else accent
+        )
+
+        ar.setTextColor(
+            if (isArabic) Color.WHITE else accent
+        )
+
+        // Language click listeners.
+        en.setOnClickListener {
+            if (!isEnglish) {
+                setAppLanguage("en")
+            }
+        }
+
+        de.setOnClickListener {
+            if (!isGerman) {
+                setAppLanguage("de")
+            }
+        }
+
+        ar.setOnClickListener {
+            if (!isArabic) {
+                setAppLanguage("ar")
+            }
+        }
     }
 
     fun setAppLanguage(tag: String) {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(tag)
+        )
     }
 
-    fun setupCollapsibleHeader(header: TextView, content: View, label: String) {
+    fun setupCollapsibleHeader(
+        header: TextView,
+        content: View,
+        label: String
+    ) {
         fun render() {
-            val expanded = content.visibility == View.VISIBLE
-            header.text = (if (expanded) "\u25BE  " else "\u25B8  ") + label
+            val expanded =
+                content.visibility == View.VISIBLE
+
+            header.text =
+                (if (expanded) "\u25BE  " else "\u25B8  ") + label
         }
+
         render()
+
         header.setOnClickListener {
-            content.visibility = if (content.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            content.visibility =
+                if (content.visibility == View.VISIBLE) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+
             render()
         }
     }
 
     fun setupOpeningBook() {
         if (OpeningBookManager.isDownloaded(activity)) {
-            activity.lifecycleScope.launch(Dispatchers.IO) { OpeningBookManager.loadIntoMemory(activity) }
+            activity.lifecycleScope.launch(Dispatchers.IO) {
+                OpeningBookManager.loadIntoMemory(activity)
+            }
+
             return
         }
+
         if (settingsRepo.bookPrompted) return
+
         AlertDialog.Builder(activity)
             .setTitle(R.string.book_download_title)
-            .setMessage(activity.getString(R.string.book_download_message, OpeningBookManager.ESTIMATED_MB))
+            .setMessage(
+                activity.getString(
+                    R.string.book_download_message,
+                    OpeningBookManager.ESTIMATED_MB
+                )
+            )
             .setNegativeButton(R.string.book_download_skip) { _, _ ->
                 settingsRepo.bookPrompted = true
             }
             .setPositiveButton(R.string.book_download_yes) { _, _ ->
                 settingsRepo.bookPrompted = true
-                val snack = Snackbar.make(activity.findViewById(R.id.drawerLayout), R.string.book_downloading, Snackbar.LENGTH_INDEFINITE)
+
+                val snack = Snackbar.make(
+                    activity.findViewById(R.id.drawerLayout),
+                    R.string.book_downloading,
+                    Snackbar.LENGTH_INDEFINITE
+                )
+
                 snack.show()
+
                 activity.lifecycleScope.launch(Dispatchers.IO) {
-                    val ok = OpeningBookManager.download(activity) { done, total ->
-                        activity.runOnUiThread { snack.setText(activity.getString(R.string.book_downloading_fmt, done, total)) }
+                    val ok = OpeningBookManager.download(activity) {
+                            done, total ->
+
+                        activity.runOnUiThread {
+                            snack.setText(
+                                activity.getString(
+                                    R.string.book_downloading_fmt,
+                                    done,
+                                    total
+                                )
+                            )
+                        }
                     }
+
                     activity.runOnUiThread {
                         snack.dismiss()
-                        val msg = if (ok) R.string.book_download_done else R.string.book_download_failed
-                        Snackbar.make(activity.findViewById(R.id.drawerLayout), msg, Snackbar.LENGTH_LONG).show()
+
+                        val msg =
+                            if (ok) {
+                                R.string.book_download_done
+                            } else {
+                                R.string.book_download_failed
+                            }
+
+                        Snackbar.make(
+                            activity.findViewById(R.id.drawerLayout),
+                            msg,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
